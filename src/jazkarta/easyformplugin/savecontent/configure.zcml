@@ -49,4 +49,8 @@
       factory=".content.EasyFormSchemaBehaviorAssignment"
       />
 
+  <adapter
+      factory=".content.FormContentNameChooser"
+      />
+
 </configure>

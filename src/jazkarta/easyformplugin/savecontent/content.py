@@ -1,21 +1,31 @@
-from Acquisition import aq_chain
+from datetime import datetime
+from Acquisition import aq_chain, aq_parent
 from zope.component import adapter
+from zope.container.interfaces import INameChooser
 from zope.interface import implementer
 from zope.interface import alsoProvides
 from zope.interface.declarations import Implements
+from zope.globalrequest import getRequest
 from collective.easyform.api import get_schema
 from collective.easyform.interfaces import IEasyForm
+from plone.app.content.namechooser import NormalizingNameChooser
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.behavior.interfaces import IBehavior
 from plone.dexterity.content import Item
 from plone.dexterity.content import FTIAwareSpecification
 from plone.dexterity.behavior import DexterityBehaviorAssignable
 from plone.memoize import volatile
+from plone.memoize import request
+from .interfaces import IFormContentFolder
 from .interfaces import IFormSaveContent
 
 
-def schema_key(func, self):
-    return 'form_schema'
+def schema_key(func, behavior):
+    key = 'easyform.schema.cache'
+    if behavior.context and getattr(behavior.context, 'id', None):
+        # incorporate the form id from the response id into the cache key
+        key += '.' + behavior.context.id.split('-savecontent-response-')[0]
+    return key
 
 
 class FormAwareSpecification(FTIAwareSpecification):
@@ -61,8 +71,10 @@ class EasyformSchemaBehaviorAssignment(object):
             if IEasyForm.providedBy(parent):
                 return parent
 
-    @volatile.cache(schema_key, volatile.store_on_context)
+    @request.cache(schema_key, 'self._get_request()')
     def schema(self):
+        # we cache the schema once we have it, because we don't always have an
+        # acquisition path from which to find it
         form = self.find_form()
         if form is not None:
             schema = get_schema(self.find_form())
@@ -72,6 +84,9 @@ class EasyformSchemaBehaviorAssignment(object):
             return schema
         return volatile._marker
 
+    def _get_request(self):
+        return getRequest()
+
 
 @adapter(IFormSaveContent)
 class EasyFormSchemaBehaviorAssignment(DexterityBehaviorAssignable):
@@ -80,3 +95,13 @@ class EasyFormSchemaBehaviorAssignment(DexterityBehaviorAssignable):
         yield EasyformSchemaBehaviorAssignment(self.context)
         for behavior in super(EasyFormSchemaBehaviorAssignment, self).enumerateBehaviors():
             yield behavior
+
+
+@implementer(INameChooser)
+@adapter(IFormContentFolder)
+class FormContentNameChooser(NormalizingNameChooser):
+
+    def chooseName(self, name, obj):
+        if not name:
+            name = aq_parent(self.context).getId() + '-savecontent-response-' + datetime.now().isoformat()
+        return super(FormContentNameChooser, self).chooseName(name, obj)

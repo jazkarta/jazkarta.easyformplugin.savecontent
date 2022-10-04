@@ -15,3 +15,7 @@ class IEasyformSaveContent(IAction):
 
 class IFormSaveContent(Interface):
     """Content object containing saved form data"""
+
+
+class IFormContentFolder(Interface):
+    """Content object containing saved form data"""
