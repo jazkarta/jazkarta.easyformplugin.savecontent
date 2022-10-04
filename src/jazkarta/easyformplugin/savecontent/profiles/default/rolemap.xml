@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<rolemap>
+  <roles>
+    <role name="Easyform Orders Accessor"/>
+  </roles>
+  <permissions>
+    <permission acquire="True"
+                name="jazkarta.easyformplugin.savecontent: Add Save Content Actions">
+      <role name="Manager" />
+      <role name="Owner" />
+      <role name="Site Administrator" />
+    </permission>
+
+  </permissions>
+</rolemap>

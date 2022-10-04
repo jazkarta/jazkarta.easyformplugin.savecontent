@@ -1,0 +1,9 @@
+<object meta_type="Plone Types Tool"
+        name="portal_types">
+
+  <object meta_type="Dexterity FTI"
+          name="jazkarta.efp.saved_data_content" />
+  <object meta_type="Dexterity FTI"
+          name="jazkarta.efp.data_folder" />
+
+</object>
