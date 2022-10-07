@@ -25,13 +25,13 @@ class EasyformSaveContent(Action):
 
     def get_storage(self):
         form = self.get_form()
-        storage = getattr(form, 'saved_form_entries', None)
+        storage = getattr(form, 'saved-form-entries', None)
         if storage is None:
             # We store the storage folder as an attribute of the non-container form object
-            folder = createContent('jazkarta.efp.data_folder', id='saved_form_entries', title=u'Saved Form Entries')
-            form.saved_form_entries = folder
-            storage = form.saved_form_entries
-            notify(ObjectAddedEvent(storage, form, 'saved_form_entries'))
+            folder = createContent('jazkarta.efp.data_folder', id='saved-form-entries', title=u'Saved Form Entries')
+            setattr(form, 'saved-form-entries', folder)
+            storage = getattr(form, 'saved-form-entries')
+            notify(ObjectAddedEvent(storage, form, 'saved-form-entries'))
         return storage
 
     def onSuccess(self, fields, request):
