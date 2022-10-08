@@ -10,6 +10,11 @@
       <role name="Owner" />
       <role name="Site Administrator" />
     </permission>
-
+    <permission acquire="True"
+                name="jazkarta.easyformplugin.savecontent: View Saved Content">
+      <role name="Manager" />
+      <role name="Owner" />
+      <role name="Site Administrator" />
+    </permission>
   </permissions>
 </rolemap>

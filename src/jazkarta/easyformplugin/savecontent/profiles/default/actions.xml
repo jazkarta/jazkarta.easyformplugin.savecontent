@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<object xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+        meta_type="Plone Actions Tool"
+        name="portal_actions">
+  <object meta_type="CMF Action Category"
+          name="object_buttons">
+    <object meta_type="CMF Action"
+            name="easyform-saved-content"
+            i18n:domain="jazkarta.easyformplugin.savecontent">
+      <property name="title"
+                i18n:translate="">View Saved Content</property>
+      <property name="description"
+                i18n:translate="" />
+      <property name="url_expr">context/@@saved-content-utils/saved_content_url|nothing</property>
+      <property name="icon_expr" />
+      <property name="available_expr">context/@@saved-content-utils/has_saved_content|nothing</property>
+      <property name="permissions">
+        <element value="jazkarta.easyformplugin.savecontent: View Saved Content" />
+      </property>
+      <property name="visible">True</property>
+    </object>
+  </object>
+</object>

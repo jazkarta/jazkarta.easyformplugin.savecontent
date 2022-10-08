@@ -8,4 +8,9 @@
     title="jazkarta.easyformplugin.savecontent: Add Save Content Actions"
     />
 
+  <permission
+    id="jazkarta.easyformplugin.savecontent.ViewSavedContent"
+    title="jazkarta.easyformplugin.savecontent: View Saved Content"
+    />
+
 </configure>

@@ -53,4 +53,15 @@
       factory=".content.FormContentNameChooser"
       />
 
+  <subscriber handler=".action.handle_form_moved" />
+
+  <browser:page
+      class=".browser.SavedContentUtils"
+      for="collective.easyform.interfaces.IEasyForm"
+      layer=".interfaces.IJazkartaEasyformpluginSaveContentLayer"
+      name="saved-content-utils"
+      allowed_attributes="has_saved_content saved_content_url"
+      permission="zope2.View"
+      />
+
 </configure>

@@ -1,7 +1,11 @@
 <?xml version="1.0"?>
 <object name="portal_workflow">
+  <object name="easyform_saved_content_workflow" meta_type="Workflow" />
   <bindings>
     <!-- No workflow for saved data by default -->
+    <type type_id="jazkarta.efp.data_folder">
+      <bound-workflow workflow_id="easyform_saved_content_workflow" />
+    </type>
     <type type_id="jazkarta.efp.saved_data_content" />
   </bindings>
 </object>
