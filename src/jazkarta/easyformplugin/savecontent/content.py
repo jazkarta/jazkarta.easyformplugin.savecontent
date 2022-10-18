@@ -57,7 +57,7 @@ class EasyformSchemaBehaviorAssignment(object):
     factory = None
     name = u'jazkara.easformplugins.savecontent'
     former_dotted_names = ''
-    interface = marker = None
+    interface = marker = IFormFieldProvider
 
     def __init__(self, context):
         self.context = context
