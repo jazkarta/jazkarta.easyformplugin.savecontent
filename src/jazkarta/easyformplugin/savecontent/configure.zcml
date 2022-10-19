@@ -64,4 +64,21 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      class=".browser.CSVDownload"
+      for="jazkarta.easyformplugin.savecontent.interfaces.IFormContentFolder"
+      layer=".interfaces.IJazkartaEasyformpluginSaveContentLayer"
+      name="download-csv"
+      permission="zope2.View"
+      />
+
+  <browser:viewlet
+    name="download-csv"
+    for="jazkarta.easyformplugin.savecontent.interfaces.IFormContentFolder"
+    manager="plone.app.layout.viewlets.interfaces.IBelowContentTitle"
+    class=".browser.ButtonViewlet"
+    layer=".interfaces.IJazkartaEasyformpluginSaveContentLayer"
+    permission="zope2.View"
+    />
+
 </configure>
