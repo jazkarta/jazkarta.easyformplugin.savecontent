@@ -1,3 +1,4 @@
+from StringIO import StringIO
 from Acquisition import aq_inner, aq_parent
 from z3c.form.interfaces import HIDDEN_MODE
 from Products.Five.browser import BrowserView
@@ -6,8 +7,12 @@ from plone.app.contenttypes.browser.folder import FolderView
 from collective.easyform.interfaces import IFieldExtender
 from zope.i18n import translate
 from .action import ACTION_DEFAULT_TITLE
+from plone.app.layout.viewlets import ViewletBase
+from collections import OrderedDict
+from .content import EasyformSchemaBehaviorAssignment
 from .action import get_save_content_action
 from .action import STORAGE_ID
+import csv
 
 try:
     from Products.CMFPlone.utils import safe_nativestring
@@ -74,3 +79,34 @@ class FormContentFolderListingView(FolderView):
         if folder_title and folder_title != default_title:
             return folder_title
         return "{}: {}".format(self.context.aq_parent.Title(), default_title)
+
+
+class CSVDownload(BrowserView):
+
+    def __call__(self):
+        items_dicts = []
+        keys = OrderedDict()
+        for obj in self.context.objectValues():
+            behavior_assignment = EasyformSchemaBehaviorAssignment(obj)
+            obj_dict = {}
+            for field_name in behavior_assignment.schema():
+                obj_dict[field_name] = getattr(obj, field_name)
+                keys[field_name] = True
+            items_dicts.append(obj_dict)
+        output = StringIO()
+        csv_writer = csv.DictWriter(output, keys.keys())
+        csv_writer.writeheader()
+        for item in items_dicts:
+            csv_writer.writerow(item)
+        self.request.response.setHeader("Content-type", "text/csv")
+        self.request.response.setHeader("Content-Disposition", 'attachment; filename="%s.csv"' % behavior_assignment.find_form().title)
+        return output.getvalue()
+
+
+class ButtonViewlet(ViewletBase):
+    def render(self):
+        return """
+        <a class="submit-widget button blue button-field submitting" href="%s">
+            Download CSV
+        </a>
+        """ % (self.context.absolute_url() + "/download-csv")
