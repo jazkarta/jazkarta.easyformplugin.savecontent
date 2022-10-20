@@ -18,6 +18,7 @@ from plone.memoize import volatile
 from plone.memoize import request
 from .interfaces import IFormContentFolder
 from .interfaces import IFormSaveContent
+from .interfaces import DynamicSaveContentSchema
 
 
 def schema_key(func, behavior):
@@ -47,7 +48,12 @@ class FormAwareSpecification(FTIAwareSpecification):
 
 @implementer(IFormSaveContent)
 class FormSaveContent(Item):
-    __providedBy__ = FormAwareSpecification()
+
+    def __conform__(self, proto):
+        """We conform to all dynamic schema interfaces"""
+        if getattr(proto, '__name__', None) == 'DynamicSaveContentSchema':
+            return self
+        return None
 
 
 @implementer(IBehavior)
@@ -57,14 +63,16 @@ class EasyformSchemaBehaviorAssignment(object):
     factory = None
     name = u'jazkara.easformplugins.savecontent'
     former_dotted_names = ''
-    interface = marker = IFormFieldProvider
+    marker = None
+    interface = IFormFieldProvider
 
     def __init__(self, context):
         self.context = context
         schema = self.schema()
         if schema is not volatile._marker:
             self.interface = schema
-            self.marker = schema
+        else:
+            self.interface = DynamicSaveContentSchema()
 
     def find_form(self):
         for parent in aq_chain(self.context):
@@ -78,10 +86,7 @@ class EasyformSchemaBehaviorAssignment(object):
         form = self.find_form()
         if form is not None:
             schema = get_schema(self.find_form())
-            alsoProvides(schema, IFormFieldProvider)
-            # make sure we don't end up with a unicade prefix
-            schema.__name__ = ''
-            return schema
+            return DynamicSaveContentSchema(schema)
         return volatile._marker
 
     def _get_request(self):
