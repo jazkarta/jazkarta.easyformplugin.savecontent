@@ -8,8 +8,8 @@ from collective.easyform.interfaces import IFieldExtender
 from zope.i18n import translate
 from .action import ACTION_DEFAULT_TITLE
 from plone.app.layout.viewlets import ViewletBase
+from collective.easyform.api import get_schema
 from collections import OrderedDict
-from .content import EasyformSchemaBehaviorAssignment
 from .action import get_save_content_action
 from .action import STORAGE_ID
 import csv
@@ -31,6 +31,11 @@ except ImportError:
         if not six.PY2 and isinstance(value, six.binary_type):
             value = safe_unicode(value, encoding)
         return value
+
+try:
+    unicode
+except NameError:
+    unicode = str
 
 
 class SavedContentUtils(BrowserView):
@@ -84,22 +89,29 @@ class FormContentFolderListingView(FolderView):
 class CSVDownload(BrowserView):
 
     def __call__(self):
+        form = self.context.aq_parent
         items_dicts = []
-        keys = OrderedDict()
+        schema_fields = OrderedDict()
+        schema = get_schema(form)
+        for field_name in schema:
+            schema_fields[field_name] = schema.get(field_name).title
+            if isinstance(schema_fields[field_name], unicode):
+                schema_fields[field_name] = schema_fields[field_name].encode("utf-8")
         for obj in self.context.objectValues():
-            behavior_assignment = EasyformSchemaBehaviorAssignment(obj)
             obj_dict = {}
-            for field_name in behavior_assignment.schema():
-                obj_dict[field_name] = getattr(obj, field_name)
-                keys[field_name] = True
+            for field_name, field_title in schema_fields.items():
+                obj_dict[field_title] = getattr(obj, field_name, '')
+                if isinstance(obj_dict[field_title], unicode):
+                    obj_dict[field_title] = obj_dict[field_title].encode("utf-8")
             items_dicts.append(obj_dict)
         output = StringIO()
-        csv_writer = csv.DictWriter(output, keys.keys())
+        csv_writer = csv.DictWriter(output, schema_fields.values())
         csv_writer.writeheader()
         for item in items_dicts:
             csv_writer.writerow(item)
-        self.request.response.setHeader("Content-type", "text/csv")
-        self.request.response.setHeader("Content-Disposition", 'attachment; filename="%s.csv"' % behavior_assignment.find_form().title)
+        self.request.response.setHeader("Content-type", "text/csv; charset=utf-8")
+        self.request.response.setHeader("Content-Disposition", 'attachment; filename="%s.csv"' % form.title)
+        self.request.response.setHeader("Content-Length", str(output.tell()))
         return output.getvalue()
 
 
