@@ -4,8 +4,10 @@ from zope import schema
 from collective.easyform.interfaces.actions import IAction
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from plone.autoform.interfaces import IFormFieldProvider
+from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.autoform.directives import write_permission
 from plone.supermodel.model import SchemaClass
+from z3c.form.interfaces import IEditForm
 
 from . import _
 
@@ -43,10 +45,13 @@ class DynamicSaveContentSchema(SchemaClass):
             self.__dict__ = schema.__dict__
             self.__name__ = self.__class__.__name__
             self.__module__ = self.__class__.__module__
+            # Mark hidden and server side fields as hidden
             hidden_fields = schema.queryTaggedValue('THidden')
             server_side = schema.queryTaggedValue('serverSide')
+            field_modes = schema.queryTaggedValue(WRITE_PERMISSIONS_KEY) or {}
             for fnames in (hidden_fields, server_side):
                 for fname in fnames:
                     if fnames[fname] is False:
                         continue
-                    schema.get(fname).readonly = True
+                    field_modes[fname] = u'jazkarta.easyformplugin.savecontent.EditHiddenFields'
+            schema.setTaggedValue(WRITE_PERMISSIONS_KEY, field_modes)
