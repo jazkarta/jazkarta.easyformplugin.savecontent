@@ -72,21 +72,20 @@
       permission="zope2.View"
       />
 
-  <browser:viewlet
-    name="download-csv"
-    for="jazkarta.easyformplugin.savecontent.interfaces.IFormContentFolder"
-    manager="plone.app.layout.viewlets.interfaces.IBelowContentTitle"
-    class=".browser.ButtonViewlet"
-    layer=".interfaces.IJazkartaEasyformpluginSaveContentLayer"
-    permission="zope2.View"
-    />
-
   <genericsetup:upgradeDepends
       profile="jazkarta.easyformplugin.savecontent:default"
       source="1000"
       destination="1001"
       title="Update behaviors and workflows"
       import_steps="typeinfo workflow"
+      />
+
+  <genericsetup:upgradeDepends
+      profile="jazkarta.easyformplugin.savecontent:default"
+      source="1001"
+      destination="1002"
+      title="Update actions"
+      import_steps="actions"
       />
 
 </configure>
