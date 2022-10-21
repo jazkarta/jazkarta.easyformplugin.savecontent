@@ -13,4 +13,9 @@
     title="jazkarta.easyformplugin.savecontent: View Saved Content"
     />
 
+  <permission
+    id="jazkarta.easyformplugin.savecontent.EditHiddenFields"
+    title="jazkarta.easyformplugin.savecontent: Edit Hidden Fields"
+    />
+
 </configure>

@@ -81,4 +81,12 @@
     permission="zope2.View"
     />
 
+  <genericsetup:upgradeDepends
+      profile="jazkarta.easyformplugin.savecontent:default"
+      source="1000"
+      destination="1001"
+      title="Update behaviors and workflows"
+      import_steps="typeinfo workflow"
+      />
+
 </configure>

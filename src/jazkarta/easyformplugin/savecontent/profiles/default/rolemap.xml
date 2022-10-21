@@ -16,5 +16,9 @@
       <role name="Owner" />
       <role name="Site Administrator" />
     </permission>
+    <permission acquire="False"
+                name="jazkarta.easyformplugin.savecontent: Edit Hidden Fields">
+        <!-- We don't allow editing of hidden fields for now-->
+    </permission>
   </permissions>
 </rolemap>
