@@ -7,7 +7,6 @@ from plone.autoform.interfaces import IFormFieldProvider
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.autoform.directives import write_permission
 from plone.supermodel.model import SchemaClass
-from z3c.form.interfaces import IEditForm
 
 from . import _
 
