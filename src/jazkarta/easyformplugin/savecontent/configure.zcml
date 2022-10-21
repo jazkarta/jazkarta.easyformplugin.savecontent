@@ -85,6 +85,7 @@
       permission="jazkarta.easyformplugin.savecontent.ViewSavedContent"
       />
 
+
   <genericsetup:upgradeDepends
       profile="jazkarta.easyformplugin.savecontent:default"
       source="1000"
@@ -97,8 +98,8 @@
       profile="jazkarta.easyformplugin.savecontent:default"
       source="1001"
       destination="1002"
-      title="Update default view"
-      import_steps="typeinfo"
+      title="Update default view and actions"
+      import_steps="typeinfo actions"
       />
 
   <browser:page
@@ -108,14 +109,5 @@
       name="download-csv"
       permission="zope2.View"
       />
-
-  <browser:viewlet
-    name="download-csv"
-    for="jazkarta.easyformplugin.savecontent.interfaces.IFormContentFolder"
-    manager="plone.app.layout.viewlets.interfaces.IBelowContentTitle"
-    class=".browser.ButtonViewlet"
-    layer=".interfaces.IJazkartaEasyformpluginSaveContentLayer"
-    permission="zope2.View"
-    />
 
 </configure>

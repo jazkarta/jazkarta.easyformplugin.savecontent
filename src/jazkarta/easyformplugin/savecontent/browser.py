@@ -57,6 +57,9 @@ class SavedContentUtils(BrowserView):
             context = aq_parent(aq_parent(aq_inner(context)))
         return context.absolute_url() + '/' + STORAGE_ID
 
+    def csv_download_url(self):
+        return self.context.absolute_url() + '/' + STORAGE_ID + '/' + 'download-csv'
+
 
 class SavedContentEditForm(DefaultEditForm):
 
@@ -113,12 +116,3 @@ class CSVDownload(BrowserView):
         self.request.response.setHeader("Content-Disposition", 'attachment; filename="%s.csv"' % form.title)
         self.request.response.setHeader("Content-Length", str(output.tell()))
         return output.getvalue()
-
-
-class ButtonViewlet(ViewletBase):
-    def render(self):
-        return """
-        <a class="submit-widget button blue button-field submitting" href="%s">
-            Download CSV
-        </a>
-        """ % (self.context.absolute_url() + "/download-csv")
