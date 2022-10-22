@@ -13,11 +13,13 @@ from collective.easyform.interfaces import IEasyForm
 from plone.dexterity.utils import createContent, createContentInContainer
 from plone.supermodel import serializeSchema
 from plone.supermodel.exportimport import BaseHandler
+from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from Products.statusmessages.interfaces import IStatusMessage
 
 from . import _
 from .interfaces import IEasyformSaveContent
+from .interfaces import ISavedContentTitleChooser
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +61,13 @@ class EasyformSaveContent(Action):
         """ TODO
         """
         content = self.create_content(fields)
+        if not getattr(content, 'title', None):
+            try:
+                title = queryMultiAdapter((content, request), ISavedContentTitleChooser)
+                if title:
+                    content.title = title
+            except Exception:
+                logger.exception('Error generating title for {}'.format(content.absolute_url()))
         IStatusMessage(request).add(_(u'Your response has been saved.'))
         request.response.redirect(content.absolute_url())
         return ''

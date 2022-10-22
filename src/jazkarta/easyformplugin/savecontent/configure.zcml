@@ -53,6 +53,10 @@
       factory=".content.FormContentNameChooser"
       />
 
+  <adapter
+      factory=".content.chooseTitle"
+      />
+
   <subscriber handler=".action.handle_form_moved" />
 
   <browser:page

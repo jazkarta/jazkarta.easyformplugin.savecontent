@@ -35,6 +35,10 @@ class IFormContentFolder(Interface):
     """Content object containing saved form data"""
 
 
+class ISavedContentTitleChooser(Interface):
+    """Adapter interface that generates a title for saved content."""
+
+
 @implementer(IFormFieldProvider)
 class DynamicSaveContentSchema(SchemaClass):
     """Importable class for dynamic schemas"""
@@ -45,8 +49,8 @@ class DynamicSaveContentSchema(SchemaClass):
             self.__name__ = self.__class__.__name__
             self.__module__ = self.__class__.__module__
             # Mark hidden and server side fields as hidden
-            hidden_fields = schema.queryTaggedValue('THidden')
-            server_side = schema.queryTaggedValue('serverSide')
+            hidden_fields = schema.queryTaggedValue('THidden') or {}
+            server_side = schema.queryTaggedValue('serverSide') or {}
             field_modes = schema.queryTaggedValue(WRITE_PERMISSIONS_KEY) or {}
             for fnames in (hidden_fields, server_side):
                 for fname in fnames:
