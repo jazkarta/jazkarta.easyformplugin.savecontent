@@ -136,7 +136,7 @@ def name_for_userid(userid):
     user = api.user.get(userid=userid)
     if user:
         try:
-            return user.getProperty('fullname', None) or userid
+            return safe_unicode(user.getProperty('fullname', None) or userid)
         except ValueError:
             return
 
@@ -152,7 +152,7 @@ def chooseTitle(obj, request):
         else:
             name_val = getattr(obj, name, None)
         if name_val:
-            title.append(name_val)
+            title.append(safe_unicode(name_val))
             break
 
     if not title:
@@ -173,14 +173,14 @@ def chooseTitle(obj, request):
         if uid:
             brains = api.portal.get_tool('portal_catalog').unrestrictedSearchResults(UID=uid)
             if brains:
-                title.append('-')
+                title.append(u'-')
                 title.append(safe_unicode(brains[0].Title))
 
     # Add surveyed date to title
     if getattr(obj, 'creation_date', None):
         dt = obj.creation_date
         if dt:
-            title.append('-')
-            title.append(dt.strftime('%Y-%m-%d'))
+            title.append(u'-')
+            title.append(safe_unicode(dt.strftime('%Y-%m-%d')))
 
     return u' '.join(title)
