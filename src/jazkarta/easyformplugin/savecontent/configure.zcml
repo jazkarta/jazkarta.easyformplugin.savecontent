@@ -68,6 +68,14 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      class=".browser.SavedContentEditForm"
+      for="jazkarta.easyformplugin.savecontent.interfaces.IFormSaveContent"
+      layer=".interfaces.IJazkartaEasyformpluginSaveContentLayer"
+      name="edit"
+      permission="cmf.ModifyPortalContent"
+    />
+
   <genericsetup:upgradeDepends
       profile="jazkarta.easyformplugin.savecontent:default"
       source="1000"
