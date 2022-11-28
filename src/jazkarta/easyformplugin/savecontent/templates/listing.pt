@@ -8,7 +8,7 @@
 
 <metal:block fill-slot="content-title">
   <h1 class="documentFirstHeading">
-    <span tal:content="context/Title">Title</span><br>
+    <span tal:content="view/getTitle"></span><br>
     <a class="button small" href="${context/aq_parent/absolute_url}">Back to form<a>
   </h1>
 </metal:block>
