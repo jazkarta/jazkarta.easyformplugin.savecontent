@@ -1,4 +1,8 @@
+from z3c.form.interfaces import HIDDEN_MODE
 from Products.Five.browser import BrowserView
+from plone.dexterity.browser.edit import DefaultEditForm
+from plone.app.contenttypes.browser.folder import FolderView
+from collective.easyform.interfaces import IFieldExtender
 from .action import get_save_content_action
 from .action import STORAGE_ID
 
@@ -16,3 +20,18 @@ class SavedContentUtils(BrowserView):
 
     def saved_content_url(self):
         return self.context.absolute_url() + '/' + STORAGE_ID
+
+
+class SavedContentEditForm(DefaultEditForm):
+
+    def updateWidgets(self):
+        super(SavedContentEditForm, self).updateWidgets()
+        for _, widget in self.widgets.items():
+            efield = IFieldExtender(widget.field)
+            if getattr(efield, "THidden", False) or widget.field.readonly:
+                widget.mode = HIDDEN_MODE
+                widget.ignoreRequest = False
+
+
+class FormContentFolderListingView(FolderView):
+    """Form submissions listing page with a customized template"""
