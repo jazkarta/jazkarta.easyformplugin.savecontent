@@ -74,8 +74,8 @@ class EasyformSchemaBehaviorAssignment(object):
         schema = self.schema()
         if schema is not volatile._marker:
             self.interface = schema
-        else:
-            self.interface = DynamicSaveContentSchema()
+        # else:
+        #     self.interface = DynamicSaveContentSchema()
 
     def find_form(self):
         for parent in aq_chain(self.context):
