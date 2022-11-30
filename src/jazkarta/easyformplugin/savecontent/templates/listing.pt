@@ -41,7 +41,7 @@
             <tal:block tal:define="obj item/getObject;
                 item_url item/getURL;
                 item_id item/getId;
-                item_title item/Title;
+                item_title item/title;
                 item_title python:item_title or item_id;
                 item_description item/Description;
                 item_type item/PortalType;
