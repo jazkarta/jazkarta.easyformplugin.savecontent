@@ -68,6 +68,23 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      class=".browser.SavedContentEditForm"
+      for="jazkarta.easyformplugin.savecontent.interfaces.IFormSaveContent"
+      layer=".interfaces.IJazkartaEasyformpluginSaveContentLayer"
+      name="edit"
+      permission="cmf.ModifyPortalContent"
+      />
+
+  <browser:page
+      name="listing_view"
+      for="jazkarta.easyformplugin.savecontent.interfaces.IFormContentFolder"
+      layer=".interfaces.IJazkartaEasyformpluginSaveContentLayer"
+      class=".browser.FormContentFolderListingView"
+      template="templates/listing.pt"
+      permission="zope2.View"
+      />
+
   <genericsetup:upgradeDepends
       profile="jazkarta.easyformplugin.savecontent:default"
       source="1000"
