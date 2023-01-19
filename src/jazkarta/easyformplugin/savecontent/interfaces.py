@@ -42,6 +42,8 @@ class ISavedContentTitleChooser(Interface):
 @implementer(IFormFieldProvider)
 class DynamicSaveContentSchema(SchemaClass):
     """Importable class for dynamic schemas"""
+    _InterfaceClass__attrs = ()
+    _implied = {}
 
     def __init__(self, schema=None):
         if schema is not None:

@@ -111,7 +111,8 @@ class FormContentNameChooser(NormalizingNameChooser):
 
     def chooseName(self, name, obj):
         if not name:
-            name = aq_parent(self.context).getId() + '-savecontent-response-' + datetime.now().isoformat()
+            name = (aq_parent(self.context).getId() + '-savecontent-response-'
+                    + datetime.now().strftime('%Y-%m-%d-%H-%M-%S.%f'))
         return super(FormContentNameChooser, self).chooseName(name, obj)
 
 
@@ -124,7 +125,7 @@ NAME_FIELDS = [
 USER_ID_FIELDS = [
     'user', 'user_id', 'userid',
     'surveyed-user-id', 'surveyed_user_id',
-    'creators'
+    'creators', 'your-name'
 ]
 OBJECT_FIELDS = [
     'surveyed-object-uid', 'surveyed_object_uid',
@@ -163,6 +164,8 @@ def chooseTitle(obj, request):
             if not isinstance(userids, (list, tuple)):
                 userids = (userids,)
             for userid in userids:
+                if not userid:
+                    continue
                 name = name_for_userid(userid)
                 if name:
                     title.append(name)
