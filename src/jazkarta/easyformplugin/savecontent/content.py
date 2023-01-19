@@ -111,8 +111,17 @@ class FormContentNameChooser(NormalizingNameChooser):
 
     def chooseName(self, name, obj):
         if not name:
-            name = (aq_parent(self.context).getId() + '-savecontent-response-'
-                    + datetime.now().strftime('%Y-%m-%d-%H-%M-%S.%f'))
+            member = self.context.portal_membership.getAuthenticatedMember()
+            if member:
+                name = "{} {}".format(
+                    member.getUserName(),
+                    datetime.now().strftime('%Y-%m-%d.%H%M%S%f')
+                )
+            else:
+                name = "{}-savecontent-response-{}".format(
+                    aq_parent(self.context).getId(),
+                    datetime.now().strftime('%Y-%m-%d.%H%M%S%f')
+                )
         return super(FormContentNameChooser, self).chooseName(name, obj)
 
 

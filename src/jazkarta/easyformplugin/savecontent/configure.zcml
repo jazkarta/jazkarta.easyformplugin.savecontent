@@ -77,7 +77,7 @@
       />
 
   <browser:page
-      name="listing_view"
+      name="view"
       for="jazkarta.easyformplugin.savecontent.interfaces.IFormContentFolder"
       layer=".interfaces.IJazkartaEasyformpluginSaveContentLayer"
       class=".browser.FormContentFolderListingView"
@@ -91,6 +91,14 @@
       destination="1001"
       title="Update behaviors and workflows"
       import_steps="typeinfo workflow"
+      />
+
+  <genericsetup:upgradeDepends
+      profile="jazkarta.easyformplugin.savecontent:default"
+      source="1001"
+      destination="1002"
+      title="Update default view"
+      import_steps="typeinfo"
       />
 
 </configure>

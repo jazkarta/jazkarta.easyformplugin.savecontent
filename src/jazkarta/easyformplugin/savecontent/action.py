@@ -102,7 +102,7 @@ def get_save_content_action(form):
             return action
 
 
-def add_action_to_form(form, title=u'Save Data as Content'):
+def add_action_to_form(form, title=ACTION_DEFAULT_TITLE):
     actions_model = serializeSchema(get_actions(form))
     parser = etree.XMLParser(remove_blank_text=True)
     model = etree.fromstring(actions_model, parser)
