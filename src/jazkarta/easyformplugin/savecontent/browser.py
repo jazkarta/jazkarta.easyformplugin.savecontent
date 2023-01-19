@@ -36,7 +36,7 @@ class SavedContentEditForm(DefaultEditForm):
 class FormContentFolderListingView(FolderView):
     """Form submissions listing page with a customized template"""
 
-    def getTitle(self):
+    def Title(self):
         action = get_save_content_action(self.context)
         if action.title:
             return action.title
