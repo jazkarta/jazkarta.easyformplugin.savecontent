@@ -43,6 +43,8 @@ class ISavedContentTitleChooser(Interface):
 class DynamicSaveContentSchema(SchemaClass):
     """Importable class for dynamic schemas"""
 
+    _implied = {}
+
     def __init__(self, schema=None):
         if schema is not None:
             self.__dict__ = schema.__dict__
@@ -58,3 +60,9 @@ class DynamicSaveContentSchema(SchemaClass):
                         continue
                     field_modes[fname] = u'jazkarta.easyformplugin.savecontent.EditHiddenFields'
             schema.setTaggedValue(WRITE_PERMISSIONS_KEY, field_modes)
+
+        # We probably need to invoke the super class __init__ method
+        # to fix
+        # AttributeError: 'DynamicSaveContentSchema' object has no attribute '_implied'
+        # but it's not working.
+        # super(DynamicSaveContentSchema, self).__init__(__name__)
