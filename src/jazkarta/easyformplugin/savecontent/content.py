@@ -126,7 +126,7 @@ class FormContentNameChooser(NormalizingNameChooser):
 
 
 NAME_FIELDS = [
-    'submitter-name', 'submitter_name',
+    'submitter-name', 'submitter_name', 'your-name',
     'name', 'fullname', 'full_name', 'full-name',
     ('first-name', 'last-name'), ('first_name', 'last_name'),
     ('firstname', 'lastname'), ('first', 'last'),
@@ -134,7 +134,7 @@ NAME_FIELDS = [
 USER_ID_FIELDS = [
     'user', 'user_id', 'userid',
     'surveyed-user-id', 'surveyed_user_id',
-    'creators', 'your-name'
+    'creators'
 ]
 OBJECT_FIELDS = [
     'surveyed-object-uid', 'surveyed_object_uid',
@@ -179,6 +179,8 @@ def chooseTitle(obj, request):
                 if name:
                     title.append(name)
                     break
+            if title:
+                break
 
     for fname in OBJECT_FIELDS:
         uid = getattr(obj, fname, None)
