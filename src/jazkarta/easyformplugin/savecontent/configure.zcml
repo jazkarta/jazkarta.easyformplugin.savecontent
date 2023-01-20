@@ -53,6 +53,10 @@
       factory=".content.FormContentNameChooser"
       />
 
+  <adapter
+      factory=".content.chooseTitle"
+      />
+
   <subscriber handler=".action.handle_form_moved" />
 
   <browser:page
@@ -72,6 +76,23 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      class=".browser.SavedContentEditForm"
+      for="jazkarta.easyformplugin.savecontent.interfaces.IFormSaveContent"
+      layer=".interfaces.IJazkartaEasyformpluginSaveContentLayer"
+      name="edit"
+      permission="cmf.ModifyPortalContent"
+      />
+
+  <browser:page
+      name="view"
+      for="jazkarta.easyformplugin.savecontent.interfaces.IFormContentFolder"
+      layer=".interfaces.IJazkartaEasyformpluginSaveContentLayer"
+      class=".browser.FormContentFolderListingView"
+      template="templates/listing.pt"
+      permission="zope2.View"
+      />
+
   <genericsetup:upgradeDepends
       profile="jazkarta.easyformplugin.savecontent:default"
       source="1000"
@@ -84,6 +105,14 @@
       profile="jazkarta.easyformplugin.savecontent:default"
       source="1001"
       destination="1002"
+      title="Update default view"
+      import_steps="typeinfo"
+      />
+
+  <genericsetup:upgradeDepends
+      profile="jazkarta.easyformplugin.savecontent:default"
+      source="1002"
+      destination="1003"
       title="Update actions"
       import_steps="actions"
       />

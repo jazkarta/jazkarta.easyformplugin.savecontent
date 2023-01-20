@@ -35,9 +35,15 @@ class IFormContentFolder(Interface):
     """Content object containing saved form data"""
 
 
+class ISavedContentTitleChooser(Interface):
+    """Adapter interface that generates a title for saved content."""
+
+
 @implementer(IFormFieldProvider)
 class DynamicSaveContentSchema(SchemaClass):
     """Importable class for dynamic schemas"""
+    _InterfaceClass__attrs = ()
+    _implied = {}
 
     def __init__(self, schema=None):
         if schema is not None:

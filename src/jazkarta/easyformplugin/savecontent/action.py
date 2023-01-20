@@ -13,11 +13,13 @@ from collective.easyform.interfaces import IEasyForm
 from plone.dexterity.utils import createContent, createContentInContainer
 from plone.supermodel import serializeSchema
 from plone.supermodel.exportimport import BaseHandler
+from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from Products.statusmessages.interfaces import IStatusMessage
 
 from . import _
 from .interfaces import IEasyformSaveContent
+from .interfaces import ISavedContentTitleChooser
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +33,7 @@ ACTION_DEFAULT_TITLE = _(
 
 DEFAULT_ACTION_SCHEMA = u'''
     <field name="save_data_as_content" type="jazkarta.easyformplugin.savecontent.action.EasyformSaveContent">
-      <title>Save Data as Content</title>
+      <title>{}</title>
     </field>
 '''
 
@@ -49,7 +51,7 @@ class EasyformSaveContent(Action):
         storage = getattr(form, STORAGE_ID, None)
         if storage is None:
             # We store the storage folder as an attribute of the non-container form object
-            folder = createContent('jazkarta.efp.data_folder', id=STORAGE_ID, title=u'Saved Form Entries')
+            folder = createContent('jazkarta.efp.data_folder', id=STORAGE_ID, title=self.title or u'Saved Form Entries')
             setattr(form, STORAGE_ID, folder)
             storage = getattr(form, STORAGE_ID)
             notify(ObjectAddedEvent(storage, form, STORAGE_ID))
@@ -59,6 +61,13 @@ class EasyformSaveContent(Action):
         """ TODO
         """
         content = self.create_content(fields)
+        if not getattr(content, 'title', None):
+            try:
+                title = queryMultiAdapter((content, request), ISavedContentTitleChooser)
+                if title:
+                    content.title = title
+            except Exception:
+                logger.exception('Error generating title for {}'.format(content.absolute_url()))
         IStatusMessage(request).add(_(u'Your response has been saved.'))
         request.response.redirect(content.absolute_url())
         return ''
@@ -93,12 +102,13 @@ def get_save_content_action(form):
             return action
 
 
-def add_action_to_form(form):
+def add_action_to_form(form, title=ACTION_DEFAULT_TITLE):
     actions_model = serializeSchema(get_actions(form))
     parser = etree.XMLParser(remove_blank_text=True)
     model = etree.fromstring(actions_model, parser)
     schema = model.find("{http://namespaces.plone.org/supermodel/schema}schema")
-    action_el = etree.fromstring(DEFAULT_ACTION_SCHEMA)
+    action_schema = DEFAULT_ACTION_SCHEMA.format(title)
+    action_el = etree.fromstring(action_schema)
     schema.append(action_el)
     updated_model = etree.tostring(model, pretty_print=True)
     form.actions_model = updated_model
