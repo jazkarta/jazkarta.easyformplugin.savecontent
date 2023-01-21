@@ -1,5 +1,5 @@
 from datetime import datetime
-from Acquisition import aq_chain, aq_parent
+from Acquisition import aq_chain, aq_inner, aq_parent
 from zope.component import adapter
 from zope.container.interfaces import INameChooser
 from zope.interface import implementer
@@ -57,6 +57,9 @@ class FormSaveContent(Item):
         if getattr(proto, '__name__', None) == 'DynamicSaveContentSchema':
             return self
         return None
+
+    def getForm(self):
+        return aq_parent(aq_parent(aq_inner(self)))
 
 
 @implementer(IBehavior)
