@@ -82,7 +82,7 @@
       layer=".interfaces.IJazkartaEasyformpluginSaveContentLayer"
       class=".browser.FormContentFolderListingView"
       template="templates/listing.pt"
-      permission="zope2.View"
+      permission="jazkarta.easyformplugin.savecontent.ViewSavedContent"
       />
 
   <genericsetup:upgradeDepends

@@ -1,3 +1,4 @@
+from Acquisition import aq_inner, aq_parent
 from z3c.form.interfaces import HIDDEN_MODE
 from Products.Five.browser import BrowserView
 from plone.dexterity.browser.edit import DefaultEditForm
@@ -31,7 +32,9 @@ class SavedContentUtils(BrowserView):
 
     def has_saved_content(self):
         context = self.context
-        if context.portal_type != 'EasyForm':
+        if context.portal_type == 'jazkarta.efp.saved_data_content':
+            context = aq_parent(aq_parent(aq_inner(context)))
+        if context.portal_type == 'EasyForm':
             return False
         action = get_save_content_action(context)
         if action is not None and getattr(context, STORAGE_ID, None):
@@ -39,7 +42,10 @@ class SavedContentUtils(BrowserView):
         return False
 
     def saved_content_url(self):
-        return self.context.absolute_url() + '/' + STORAGE_ID
+        context = self.context
+        if context.portal_type == 'jazkarta.efp.saved_data_content':
+            context = aq_parent(aq_parent(aq_inner(context)))
+        return context.absolute_url() + '/' + STORAGE_ID
 
 
 class SavedContentEditForm(DefaultEditForm):
