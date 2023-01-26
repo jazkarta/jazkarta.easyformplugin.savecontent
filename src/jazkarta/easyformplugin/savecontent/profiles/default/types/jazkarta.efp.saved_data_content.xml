@@ -80,5 +80,15 @@
       visible="True">
     <permission value="Modify portal content"/>
   </action>
+  <action
+      action_id="easyform-saved-content"
+      category="object_buttons"
+      condition_expr="context/aq_parent/absolute_url|nothing"
+      i18n:attributes="title"
+      title="View Saved Content"
+      url_expr="string:${context/aq_parent/absolute_url|nothing}"
+      visible="True">
+    <permission value="jazkarta.easyformplugin.savecontent: View Saved Content"/>
+  </action>
 
 </object>

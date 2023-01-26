@@ -1,4 +1,5 @@
 import json
+import six
 from StringIO import StringIO
 from Acquisition import aq_inner, aq_parent
 from z3c.form.interfaces import HIDDEN_MODE
@@ -22,8 +23,6 @@ except ImportError:
     from Products.CMFPlone.utils import safe_encode
     from Products.CMFPlone.utils import safe_unicode
 
-    import six
-
     def safe_nativestring(value, encoding='utf-8'):
         """Convert a value to str in py2 and to text in py3
         """
@@ -38,8 +37,6 @@ class SavedContentUtils(BrowserView):
 
     def has_saved_content(self):
         context = self.context
-        if context.portal_type == 'jazkarta.efp.saved_data_content':
-            context = aq_parent(aq_parent(aq_inner(context)))
         if context.portal_type != 'EasyForm':
             return False
         action = get_save_content_action(context)
@@ -49,8 +46,6 @@ class SavedContentUtils(BrowserView):
 
     def saved_content_url(self):
         context = self.context
-        if context.portal_type == 'jazkarta.efp.saved_data_content':
-            context = aq_parent(aq_parent(aq_inner(context)))
         return context.absolute_url() + '/' + STORAGE_ID
 
     def csv_download_url(self):

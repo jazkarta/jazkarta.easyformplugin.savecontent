@@ -4,6 +4,7 @@ from zope.component import adapter
 from zope.component import subscribers
 from zope.event import notify
 from zope.lifecycleevent import IObjectMovedEvent
+from zope.lifecycleevent import modified
 from zope.lifecycleevent import ObjectAddedEvent
 from zope.schema import getFieldsInOrder
 from collective.easyform.actions import Action, ActionFactory
@@ -66,6 +67,8 @@ class EasyformSaveContent(Action):
                 title = queryMultiAdapter((content, request), ISavedContentTitleChooser)
                 if title:
                     content.title = title
+                    # We need to reindex
+                    modified(content)
             except Exception:
                 logger.exception('Error generating title for {}'.format(content.absolute_url()))
         IStatusMessage(request).add(_(u'Your response has been saved.'))
