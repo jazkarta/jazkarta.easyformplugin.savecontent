@@ -85,5 +85,15 @@
       visible="True">
     <permission value="Modify portal content"/>
   </action>
+  <action
+      action_id="export-csv"
+      category="object_buttons"
+      condition_expr=""
+      i18n:attributes="title"
+      title="Export CSV"
+      url_expr="string:${object_url}/download-csv"
+      visible="True">
+    <permission value="jazkarta.easyformplugin.savecontent: View Saved Content"/>
+  </action>
 
 </object>

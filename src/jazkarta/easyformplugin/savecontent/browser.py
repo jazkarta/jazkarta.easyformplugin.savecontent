@@ -1,3 +1,4 @@
+import json
 from StringIO import StringIO
 from Acquisition import aq_inner, aq_parent
 from z3c.form.interfaces import HIDDEN_MODE
@@ -7,7 +8,7 @@ from plone.app.contenttypes.browser.folder import FolderView
 from collective.easyform.interfaces import IFieldExtender
 from zope.i18n import translate
 from .action import ACTION_DEFAULT_TITLE
-from plone.app.layout.viewlets import ViewletBase
+from plone.restapi.interfaces import IJsonCompatible
 from collective.easyform.api import get_schema
 from collections import OrderedDict
 from .action import get_save_content_action
@@ -31,11 +32,6 @@ except ImportError:
         if not six.PY2 and isinstance(value, six.binary_type):
             value = safe_unicode(value, encoding)
         return value
-
-try:
-    unicode
-except NameError:
-    unicode = str
 
 
 class SavedContentUtils(BrowserView):
@@ -97,15 +93,20 @@ class CSVDownload(BrowserView):
         schema_fields = OrderedDict()
         schema = get_schema(form)
         for field_name in schema:
-            schema_fields[field_name] = schema.get(field_name).title
-            if isinstance(schema_fields[field_name], unicode):
-                schema_fields[field_name] = schema_fields[field_name].encode("utf-8")
-        for obj in self.context.objectValues():
+            schema_fields[field_name] = safe_nativestring(schema.get(field_name).title)
+        # Use content values here to disallow exporting of content where the
+        # user doesn't have view permission.
+        for obj in self.context.contentValues():
             obj_dict = {}
             for field_name, field_title in schema_fields.items():
-                obj_dict[field_title] = getattr(obj, field_name, '')
-                if isinstance(obj_dict[field_title], unicode):
-                    obj_dict[field_title] = obj_dict[field_title].encode("utf-8")
+                value = getattr(obj, field_name, u'') or u''
+                if isinstance(value, (str, (six.text_type, six.binary_type))):
+                    value = safe_nativestring(value)
+                elif isinstance(value, (list, tuple)):
+                    value = '; '.join(safe_nativestring(v) for v in value)
+                else:
+                    value = safe_nativestring(json.dumps(IJsonCompatible(value)))
+                obj_dict[field_title] = value
             items_dicts.append(obj_dict)
         output = StringIO()
         csv_writer = csv.DictWriter(output, schema_fields.values())
