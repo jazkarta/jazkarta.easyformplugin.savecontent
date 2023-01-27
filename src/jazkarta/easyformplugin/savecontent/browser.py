@@ -1,15 +1,16 @@
 import json
 import six
 from StringIO import StringIO
-from Acquisition import aq_inner, aq_parent
+from plone.app.textfield import RichTextValue
 from z3c.form.interfaces import HIDDEN_MODE
 from Products.Five.browser import BrowserView
 from plone.dexterity.browser.edit import DefaultEditForm
+from plone.namedfile.interfaces import INamedFile
 from plone.app.contenttypes.browser.folder import FolderView
 from collective.easyform.interfaces import IFieldExtender
 from zope.i18n import translate
 from .action import ACTION_DEFAULT_TITLE
-from plone.restapi.interfaces import IJsonCompatible
+from plone.restapi.serializer.converters import json_compatible
 from collective.easyform.api import get_schema
 from collections import OrderedDict
 from .action import get_save_content_action
@@ -100,10 +101,17 @@ class CSVDownload(BrowserView):
                 value = getattr(obj, field_name, u'') or u''
                 if isinstance(value, (str, (six.text_type, six.binary_type))):
                     value = safe_nativestring(value)
+                elif isinstance(value, RichTextValue):
+                    # Get string output and remove carriage returns
+                    value = safe_nativestring(value.output).replace('&#13;', '')
+                elif INamedFile.providedBy(value):
+                    value = safe_nativestring(value.filename)
                 elif isinstance(value, (list, tuple)):
                     value = '; '.join(safe_nativestring(v) for v in value)
                 else:
-                    value = safe_nativestring(json.dumps(IJsonCompatible(value)))
+                    value = safe_nativestring(
+                        json.dumps(json_compatible(value, obj))
+                    )
                 obj_dict[field_title] = value
             items_dicts.append(obj_dict)
         output = StringIO()
