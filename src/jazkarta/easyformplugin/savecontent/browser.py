@@ -87,8 +87,11 @@ class CSVDownload(BrowserView):
         items_dicts = []
         schema_fields = OrderedDict()
         schema = get_schema(form)
-        for field_name in schema:
-            schema_fields[field_name] = safe_nativestring(schema.get(field_name).title)
+        fields = [schema[f] for f in schema]
+        fields.sort(key=lambda f: f.order)
+        for field in fields:
+            field_name = field.__name__
+            schema_fields[field_name] = safe_nativestring(field.title)
         # Use content values here to disallow exporting of content where the
         # user doesn't have view permission.
         for obj in self.context.contentValues():
