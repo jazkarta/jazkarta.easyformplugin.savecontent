@@ -34,7 +34,7 @@ ACTION_DEFAULT_TITLE = _(
     default=u'Save Data as Content',
 )
 
-DEFAULT_ACTION_SCHEMA = u'''
+DEFAULT_ACTION_SCHEMA = '''
     <field name="save_data_as_content" type="jazkarta.easyformplugin.savecontent.action.EasyformSaveContent">
       <title>{}</title>
     </field>
@@ -112,7 +112,7 @@ def add_action_to_form(form, title=ACTION_DEFAULT_TITLE):
     parser = etree.XMLParser()
     model = etree.fromstring(actions_model, parser)
     schema = model.find("{http://namespaces.plone.org/supermodel/schema}schema")
-    action_schema = escape(safe_nativestring(DEFAULT_ACTION_SCHEMA.format(title)))
+    action_schema = DEFAULT_ACTION_SCHEMA.format(escape(safe_nativestring(title)))
     action_el = etree.fromstring(action_schema)
     schema.append(action_el)
     updated_model = etree.tostring(model, pretty_print=True)
