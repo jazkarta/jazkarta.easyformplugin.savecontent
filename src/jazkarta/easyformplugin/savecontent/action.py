@@ -1,5 +1,6 @@
 import logging
 from lxml import etree
+from xml.sax.saxutils import escape
 from zope.component import adapter
 from zope.component import subscribers
 from zope.event import notify
@@ -21,6 +22,7 @@ from Products.statusmessages.interfaces import IStatusMessage
 from . import _
 from .interfaces import IEasyformSaveContent
 from .interfaces import ISavedContentTitleChooser
+from .utils import safe_nativestring
 
 logger = logging.getLogger(__name__)
 
@@ -107,10 +109,10 @@ def get_save_content_action(form):
 
 def add_action_to_form(form, title=ACTION_DEFAULT_TITLE):
     actions_model = serializeSchema(get_actions(form))
-    parser = etree.XMLParser(remove_blank_text=True)
+    parser = etree.XMLParser()
     model = etree.fromstring(actions_model, parser)
     schema = model.find("{http://namespaces.plone.org/supermodel/schema}schema")
-    action_schema = DEFAULT_ACTION_SCHEMA.format(title)
+    action_schema = escape(safe_nativestring(DEFAULT_ACTION_SCHEMA.format(title)))
     action_el = etree.fromstring(action_schema)
     schema.append(action_el)
     updated_model = etree.tostring(model, pretty_print=True)
