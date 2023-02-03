@@ -20,13 +20,12 @@ from zope.interface import implementer
 from Products.statusmessages.interfaces import IStatusMessage
 
 from . import _
+from . import STORAGE_ID
 from .interfaces import IEasyformSaveContent
 from .interfaces import ISavedContentTitleChooser
 from .utils import safe_nativestring
 
 logger = logging.getLogger(__name__)
-
-STORAGE_ID = 'saved-form-entries'
 
 # Add this to ensure we get a translation
 ACTION_DEFAULT_TITLE = _(
