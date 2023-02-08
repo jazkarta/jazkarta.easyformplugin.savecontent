@@ -91,7 +91,7 @@ class EasyformSchemaBehaviorAssignment(object):
         # acquisition path from which to find it
         form = self.find_form()
         if form is not None:
-            schema = get_schema(self.find_form())
+            schema = get_schema(form)
             return DynamicSaveContentSchema(schema)
         return volatile._marker
 

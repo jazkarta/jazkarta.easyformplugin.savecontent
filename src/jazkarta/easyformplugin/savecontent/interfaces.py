@@ -1,7 +1,10 @@
 from zope.interface import Interface
 from zope.interface import implementer
+from zope.interface.interface import InterfaceClass
+from zope.interface.interface import TAGGED_DATA
 from zope import schema
 from collective.easyform.interfaces.actions import IAction
+from collective.easyform.interfaces import IReCaptcha
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
@@ -44,12 +47,21 @@ class DynamicSaveContentSchema(SchemaClass):
     """Importable class for dynamic schemas"""
     _InterfaceClass__attrs = ()
     _implied = {}
+    __name__ = 'DynamicSaveContentSchema'
 
     def __init__(self, schema=None):
         if schema is not None:
-            self.__dict__ = schema.__dict__
-            self.__name__ = self.__class__.__name__
-            self.__module__ = self.__class__.__module__
+            # Pull in private attributes of schema for new interface attrs
+            # skip recaptcha fields
+            attrs = {k: v for k, v in schema._InterfaceClass__attrs.items()
+                     if not IReCaptcha.providedBy(v)}
+            attrs[TAGGED_DATA] = schema._Element__tagged_values
+            InterfaceClass.__init__(
+                self, self.__class__.__name__,
+                (Interface,), attrs, None,
+                self.__class__.__module__
+            )
+
             # Mark hidden and server side fields as hidden
             hidden_fields = schema.queryTaggedValue('THidden') or {}
             server_side = schema.queryTaggedValue('serverSide') or {}
@@ -59,4 +71,4 @@ class DynamicSaveContentSchema(SchemaClass):
                     if fnames[fname] is False:
                         continue
                     field_modes[fname] = u'jazkarta.easyformplugin.savecontent.EditHiddenFields'
-            schema.setTaggedValue(WRITE_PERMISSIONS_KEY, field_modes)
+            self.setTaggedValue(WRITE_PERMISSIONS_KEY, field_modes)
