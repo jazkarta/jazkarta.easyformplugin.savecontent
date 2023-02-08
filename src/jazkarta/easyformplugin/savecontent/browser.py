@@ -94,9 +94,11 @@ class CSVDownload(BrowserView):
                 elif isinstance(value, (list, tuple)):
                     value = '; '.join(safe_nativestring(v) for v in value)
                 else:
-                    value = safe_nativestring(
-                        json.dumps(json_compatible(value, obj))
-                    )
+                    context_json = json_compatible(value, obj)
+                    if context_json is not None:
+                        value = str(context_json)
+                    else:
+                        value = str(json_compatible(value))
                 obj_dict[field_title] = value
             items_dicts.append(obj_dict)
         output = StringIO()
