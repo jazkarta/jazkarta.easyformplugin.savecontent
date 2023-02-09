@@ -8,6 +8,7 @@ from plone.dexterity.browser.edit import DefaultEditForm
 from plone.namedfile.interfaces import INamedFile
 from plone.app.contenttypes.browser.folder import FolderView
 from collective.easyform.interfaces import IFieldExtender
+from collective.easyform.interfaces import IReCaptcha
 from zope.i18n import translate
 from .action import ACTION_DEFAULT_TITLE
 from plone.restapi.serializer.converters import json_compatible
@@ -76,6 +77,8 @@ class CSVDownload(BrowserView):
         fields = [schema[f] for f in schema]
         fields.sort(key=lambda f: f.order)
         for field in fields:
+            if IReCaptcha.providedBy(field):
+                continue
             field_name = field.__name__
             schema_fields[field_name] = safe_nativestring(field.title)
         # Use content values here to disallow exporting of content where the

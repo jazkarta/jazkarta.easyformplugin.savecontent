@@ -7,6 +7,7 @@ from collective.easyform.interfaces.actions import IAction
 from collective.easyform.interfaces import IReCaptcha
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from plone.autoform.interfaces import IFormFieldProvider
+from plone.autoform.interfaces import OMITTED_KEY
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.autoform.directives import write_permission
 from plone.supermodel.model import SchemaClass
@@ -53,8 +54,7 @@ class DynamicSaveContentSchema(SchemaClass):
         if schema is not None:
             # Pull in private attributes of schema for new interface attrs
             # skip recaptcha fields
-            attrs = {k: v for k, v in schema._InterfaceClass__attrs.items()
-                     if not IReCaptcha.providedBy(v)}
+            attrs = schema._InterfaceClass__attrs
             attrs[TAGGED_DATA] = schema._Element__tagged_values
             InterfaceClass.__init__(
                 self, self.__class__.__name__,
@@ -72,3 +72,5 @@ class DynamicSaveContentSchema(SchemaClass):
                         continue
                     field_modes[fname] = u'jazkarta.easyformplugin.savecontent.EditHiddenFields'
             self.setTaggedValue(WRITE_PERMISSIONS_KEY, field_modes)
+            self.setTaggedValue(OMITTED_KEY, [(Interface, k, 'true') for k in attrs
+                                              if IReCaptcha.providedBy(attrs[k])])
