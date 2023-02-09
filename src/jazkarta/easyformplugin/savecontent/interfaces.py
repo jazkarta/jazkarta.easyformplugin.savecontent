@@ -8,6 +8,7 @@ from collective.easyform.interfaces import IReCaptcha
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.autoform.interfaces import OMITTED_KEY
+from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.autoform.directives import write_permission
 from plone.supermodel.model import SchemaClass
@@ -32,7 +33,7 @@ class IFormSaveContent(Interface):
         description=_('Display title, editable by admins only.'),
         required=False,
     )
-    write_permission(title=u'jazkarta.easyformplugin.savecontent.AddEasyformSaveContentActions')
+    write_permission(title=u'jazkarta.easyformplugin.savecontent.ViewHiddenFields')
 
 
 class IFormContentFolder(Interface):
@@ -65,12 +66,17 @@ class DynamicSaveContentSchema(SchemaClass):
             # Mark hidden and server side fields as hidden
             hidden_fields = schema.queryTaggedValue('THidden') or {}
             server_side = schema.queryTaggedValue('serverSide') or {}
-            field_modes = schema.queryTaggedValue(WRITE_PERMISSIONS_KEY) or {}
+            write_perm_map = schema.queryTaggedValue(WRITE_PERMISSIONS_KEY) or {}
+            read_perm_map = schema.queryTaggedValue(READ_PERMISSIONS_KEY) or {}
             for fnames in (hidden_fields, server_side):
                 for fname in fnames:
                     if fnames[fname] is False:
                         continue
-                    field_modes[fname] = u'jazkarta.easyformplugin.savecontent.EditHiddenFields'
-            self.setTaggedValue(WRITE_PERMISSIONS_KEY, field_modes)
-            self.setTaggedValue(OMITTED_KEY, [(Interface, k, 'true') for k in attrs
-                                              if IReCaptcha.providedBy(attrs[k])])
+                    write_perm_map[fname] = u'jazkarta.easyformplugin.savecontent.EditHiddenFields'
+                    read_perm_map[fname] = u'jazkarta.easyformplugin.savecontent.ViewHiddenFields'
+            self.setTaggedValue(WRITE_PERMISSIONS_KEY, write_perm_map)
+            self.setTaggedValue(READ_PERMISSIONS_KEY, read_perm_map)
+            omitted = ((schema.queryTaggedValue(OMITTED_KEY) or []) +
+                       [(Interface, k, 'true') for k in attrs
+                        if IReCaptcha.providedBy(attrs[k])])
+            self.setTaggedValue(OMITTED_KEY, omitted)

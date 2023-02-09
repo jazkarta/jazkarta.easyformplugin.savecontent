@@ -22,5 +22,12 @@
                 name="jazkarta.easyformplugin.savecontent: Edit Hidden Fields">
         <!-- We don't allow editing of hidden fields for now-->
     </permission>
+    <permission acquire="True"
+                name="jazkarta.easyformplugin.savecontent: View Hidden Fields">
+      <role name="Manager" />
+      <role name="Reader" />
+      <role name="Reviewer" />
+      <role name="Site Administrator" />
+    </permission>
   </permissions>
 </rolemap>
