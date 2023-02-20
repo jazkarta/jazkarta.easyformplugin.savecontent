@@ -72,6 +72,8 @@ class EasyformSaveContent(Action):
                     modified(content)
             except Exception:
                 logger.exception('Error generating title for {}'.format(content.absolute_url()))
+        request.environ['d2c-obj-created-url'] = content.absolute_url()
+        request.environ['d2c-obj-created-uid'] = content.UID()
         IStatusMessage(request).add(_(u'Your response has been saved.'))
         request.response.redirect(content.absolute_url())
         return ''
