@@ -1,6 +1,6 @@
 import json
 import six
-from StringIO import StringIO
+from six import StringIO
 from plone.app.textfield import RichTextValue
 from z3c.form.interfaces import HIDDEN_MODE
 from Products.Five.browser import BrowserView
