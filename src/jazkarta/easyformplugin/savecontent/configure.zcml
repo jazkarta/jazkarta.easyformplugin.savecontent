@@ -58,6 +58,7 @@
       />
 
   <subscriber handler=".action.handle_form_moved" />
+  <subscriber handler=".action.handle_form_copied" />
 
   <browser:page
       class=".browser.SavedContentUtils"

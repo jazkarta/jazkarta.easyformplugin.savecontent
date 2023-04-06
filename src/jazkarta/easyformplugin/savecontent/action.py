@@ -5,6 +5,7 @@ from zope.component import adapter
 from zope.component import subscribers
 from zope.event import notify
 from zope.lifecycleevent import IObjectMovedEvent
+from zope.lifecycleevent.interfaces import IObjectCopiedEvent
 from zope.lifecycleevent import modified
 from zope.lifecycleevent import ObjectAddedEvent
 from zope.schema import getFieldsInOrder
@@ -137,3 +138,11 @@ def handle_form_moved(obj, event):
     # Iterate over all subscribers on the saved content storage
     for ignored in subscribers((storage, event), None):
         pass
+
+
+@adapter(IEasyForm, IObjectCopiedEvent)
+def handle_form_copied(obj, event):
+    """Delete saved content on form copy"""
+    storage = getattr(obj, STORAGE_ID, None)
+    if storage is not None:
+        delattr(obj, STORAGE_ID)
