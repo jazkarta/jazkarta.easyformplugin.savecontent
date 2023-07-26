@@ -51,6 +51,7 @@ setup(
     install_requires=[
         "setuptools",
         "collective.easyform",
+        "plone.restapi",
     ],
     extras_require={
         "test": [
