@@ -42,7 +42,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "jazkarta.easyformplugin.salesforce"
+project = "jazkarta.easyformplugin.savecontent"
 copyright = "Jazkarta (Jazkarta)"
 author = "Jazkarta (Jazkarta)"
 

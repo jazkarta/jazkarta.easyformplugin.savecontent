@@ -1,4 +1,4 @@
-jazkarta.easyformplugin.salesforce Copyright 2022, Jazkarta
+jazkarta.easyformplugin.savecontent Copyright 2022, Jazkarta
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 2
