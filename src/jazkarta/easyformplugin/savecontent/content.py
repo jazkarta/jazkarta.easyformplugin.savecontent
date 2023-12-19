@@ -129,7 +129,8 @@ class FormContentNameChooser(NormalizingNameChooser):
 
 
 NAME_FIELDS = [
-    'submitter-name', 'submitter_name', 'participant-name', 'your-name',
+    'submitter-name', 'submitter_name', 'participant-name',
+    'participant_name', 'your-name', 'your_name',
     'name', 'fullname', 'full_name', 'full-name',
     ('first-name', 'last-name'), ('first_name', 'last_name'),
     ('firstname', 'lastname'), ('first', 'last'),
